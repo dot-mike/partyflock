@@ -1,9 +1,0 @@
-{
-	"id": "9hUUrTdcF8cmIQY",
-	"json": "{\"id\":\"9hUUrTdcF8cmIQY\",\"url\":\"https://partyflock.nl/agenda/search?enc=%F0%9F%A5%B0&NAME=&CB_COUNTRY=1&FILTERCOUNTRYID=1&CB_WHEN=1&WHEN=future&GENRES=#results\",\"loadedUrl\":\"https://partyflock.nl/agenda/search?enc=%F0%9F%A5%B0&NAME=&CB_COUNTRY=1&FILTERCOUNTRYID=1&CB_WHEN=1&WHEN=future&GENRES=#results\",\"uniqueKey\":\"https://partyflock.nl/agenda/search?CB_COUNTRY=1&CB_WHEN=1&FILTERCOUNTRYID=1&GENRES=&NAME=&WHEN=future&enc=%F0%9F%A5%B0\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2022-12-23T11:47:06.858Z\"}",
-	"method": "GET",
-	"orderNo": null,
-	"retryCount": 0,
-	"uniqueKey": "https://partyflock.nl/agenda/search?CB_COUNTRY=1&CB_WHEN=1&FILTERCOUNTRYID=1&GENRES=&NAME=&WHEN=future&enc=%F0%9F%A5%B0",
-	"url": "https://partyflock.nl/agenda/search?enc=%F0%9F%A5%B0&NAME=&CB_COUNTRY=1&FILTERCOUNTRYID=1&CB_WHEN=1&WHEN=future&GENRES=#results"
-}
