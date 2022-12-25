@@ -1,9 +1,9 @@
-import { createPlaywrightRouter} from 'crawlee';
+import { createPlaywrightRouter } from 'crawlee';
+import { eventURLs } from "./main.js"
 
-export const playwrightRouter = createPlaywrightRouter();
+const playwrightRouter = createPlaywrightRouter();
 
-const eventURLs = []
-playwrightRouter.addDefaultHandler(async ({ request, page, log, enqueueLinks }) => {
+playwrightRouter.addDefaultHandler(async ({ request, page, log }) => {
 
     const title = await page.title();
     log.info(`Processing input URL: ${title}`, { url: request.loadedUrl });
@@ -16,15 +16,7 @@ playwrightRouter.addDefaultHandler(async ({ request, page, log, enqueueLinks }) 
     }
 
     log.info(`Enqueueing ${eventURLs.length} party URLs`)
-    log.info(`Party URLs:${eventURLs}`)
-
-/**
-    await enqueueLinks({
-        label: "event",
-        urls: eventURLs
-    });
- */
 }
 );
 
-export {eventURLs}
+export { playwrightRouter, eventURLs }
