@@ -24,7 +24,6 @@ const cheerioCrawler = new CheerioCrawler({
     requestHandler: cheerioRouter,
     //testing
     maxConcurrency: 1,
-    maxRequestsPerCrawl: 5
 });
 
 console.log(eventURLs)

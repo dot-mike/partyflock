@@ -6,12 +6,13 @@ export const output = {
             "sourceId": "",
             "sourceUrl": "https://www.songkick.com/concerts/39779224-deja-vu-at-welly-club",
             "plattform": "www.partyflock.nl/",
-            "retrievalDate": "2022-07-22T09:09:53.287Z",
+            "retrievalDate": "2022-07-22T09:09:53.287Z", //prefered timezone?
 
-            //is needed for partyflocker ???
-            //"urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
-            //"urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
-            
+            //todo
+            "urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
+            "urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
+            //
+
             //should it be "nl" for partyflocker ??? => if not code needs to be changed as it sometimes relies on text e.g ticket url
             "sourceDataLocalization": "nl"
             //
@@ -19,17 +20,14 @@ export const output = {
         "description": "Schlager Parade",
         "startDateTime": "2021-07-23 08:00",
         "endDateTime": "2021-07-23 23:00",
-
+        "status": "",//currently collecting only "Uitverkocht" in case of alert "sold out" 
+        
         //not found
-        "status": "",
-        "isOnline": "", //should be null or empty string?
+        "isOnline": "",
         "category": "",
-        "tags": [
-            "",
-            ""
-        ],
         //
 
+        "tags": [],
         "admissionInformation": [
             {
                 "amount": 10,
@@ -49,47 +47,56 @@ export const output = {
         ]
     },
 
-    //pokracuj
     "location": {
-        "name": "The Welly Club",
-        "description": "nice place for a party with live music",
+        "name": "",
+        "description": "",
         "sourceInformation": {
             "uuid": "",
-            "sourceId": "",
-            "sourceUrl": "https://www.songkick.com/concerts/39779224-deja-vu-at-welly-club",
-            "plattform": "www.songkick.com",
-            "retrievalDate": "2022-07-22T09:09:53.287Z",
+            "sourceId": "URL",
+            "sourceUrl": "",
+            "plattform": "https://partyflock.nl",
+            "retrievalDate": "", //prefered timezone?
+
+            //todo
             "urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
             "urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
-            "sourceDataLocalization": "en"
+            //
+
+            "sourceDataLocalization": "nl"
         },
-        "websiteUrls": [
-            "goolge.places/asdf",
-            "www.club.de"
-        ],
-        "phoneNumbers": [
-            "+42 1912992",
-            "+42 1912444"
-        ],
-        "emailAddresses": [
-            "asdf@gmail.com",
-            "dasdssdsa@web.de"
-        ],
+        "websiteUrls": [],
+
+        //not found
+        "phoneNumbers": [],
+        //
+
+        "emailAddresses": [],
+
+        //not found        
         "category": "dance_club",
         "tags": [
             "entertainment",
             "party"
         ],
+        //
+
         "address": {
-            "countryCode": "de",
-            "country": "Germany",
-            "street": "BEVERLEY ROAD",
+            //should be always nl?
+            "countryCode": "nl",
+            //
+
+            "country": "",
+            "street": "",
             "houseNumber": "42a",
-            "postalCode": "HU3 1TS",
-            "city": "Hull",
-            "state": "saxony",
-            "region": "sächsische schweiz",
-            "rawAddress": "BEVERLEY ROAD 42a sächsische schweiz saxony Germany"
+            "postalCode": "",
+            "city": "",
+
+            //not found
+            "state": "",
+            "region": "",
+            //
+
+            "rawAddress": ""
         }
     },
     "organizers": [
