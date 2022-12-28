@@ -13,7 +13,7 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
     log.info(`${title}`, { url: request.loadedUrl });
 
     //event
-    result.event.name = $("h1")?.text()
+    result.event.name = $("h1").text()
     result.event.sourceInformation.sourceUrl = request.loadedUrl
     result.event.sourceInformation.retrievalDate = new Date().toISOString()
     result.event.description = $(".block.forcewrap").text()
@@ -62,28 +62,35 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
     result.event.ticketUrls = [$("div.event-actions.noncust.block > a:contains('Koop tickets')").attr("href")]
 
 
-    //location
+    //enqueueing location
     result.location.name = $("span[itemprop='name']", "span[itemprop='location']").text()
-    let locationHref = $("a[href^='/location/']", "span[itemprop='location']").attr("href")
 
-    if (locationHref) {
-        result.location.sourceInformation.sourceUrl = `https://partyflock.nl${locationHref}`
+    log.info(`enqueueing URL for location`);
+    await enqueueLinks({
+        label: 'location',
+        forefront: true,
+        selector: "span[itemprop='location'] > a[href^='/location/']",
+        userData: {...result},
+    });
 
-        log.info(`enqueueing URL for location`);
-        await enqueueLinks({
-            label: 'location',
-            forefront: true,
-            urls: [result.location.sourceInformation.sourceUrl],
-            userData: result,
-        });
-    }
 
-    else {
-        await Dataset.pushData(result);
-    }
+    //enqueueing organizer
+    log.info(`enqueueing URL for organizer`);
+    await enqueueLinks({
+        label: 'organizer',
+        forefront: true,
+        selector: "div.party.box span[itemprop='organizer'] > a[itemprop='url']",
+        userData: {...result},
+    });
+
+
+    console.log("dobehl default handler")
 });
 
 
+
+
+//collecting location
 cheerioRouter.addHandler('location', async ({ request, $, log }) => {
     const title = $('title').text();
     log.info(`${title}`, { url: request.loadedUrl });
@@ -104,36 +111,30 @@ cheerioRouter.addHandler('location', async ({ request, $, log }) => {
     result.location.address.city = $("span[itemprop='addressLocality']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
     result.location.address.rawAddress = `${result.location.address.street} ${result.location.address.houseNumber} ${result.location.address.country}`
 
-    await Dataset.pushData({
-        result
-    });
+
+    console.log("zpracovavam location")
+
+    // await Dataset.pushData({
+    //     location: true
+    // });
 });
 
-//organizer
+
+
+
+//collecting organizer
 cheerioRouter.addHandler('organizer', async ({ request, $, log }) => {
     const title = $('title').text();
     log.info(`${title}`, { url: request.loadedUrl });
 
     let result = request.userData
-    result.location.description = $("#biobody").text()
-    result.location.sourceInformation.uuid = request.url.split("/")[4]
-    result.location.sourceInformation.sourceUrl = request.url
-    result.location.sourceInformation.retrievalDate = new Date().toISOString()
-    result.location.websiteUrls.push($("a[title]", "table.nodyn.deflist.vtop tr:contains('Site')").attr("title"))
-    result.location.address.country = $("span[itemprop='addressCountry']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
+    console.log("zpracovavam organizer")
 
-    result.location.address.street = $("span[itemprop='streetAddress']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
-    result.location.address.houseNumber = result.location.address.street.match(/\d+$/)
-    result.location.address.street = result.location.address.street.replace(` ${result.location.address.houseNumber}`, "")
-
-    result.location.address.postalCode = $("span[itemprop='postalCode']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
-    result.location.address.city = $("span[itemprop='addressLocality']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
-    result.location.address.rawAddress = `${result.location.address.street} ${result.location.address.houseNumber} ${result.location.address.country}`
-
-    await Dataset.pushData({
-        result
-    });
+    // await Dataset.pushData({
+    //     organizer: true,
+    // });
 });
+
 
 
 export { cheerioRouter }

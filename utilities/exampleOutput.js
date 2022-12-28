@@ -87,7 +87,7 @@ export const output = {
 
             "country": "",
             "street": "",
-            "houseNumber": "42a",
+            "houseNumber": "",
             "postalCode": "",
             "city": "",
 
