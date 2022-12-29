@@ -11,8 +11,18 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
     let result = { ...output }
     const title = $('title').text();
     log.info(`${title}`, { url: request.loadedUrl });
+let object = {
 
-    //event
+
+
+
+
+
+
+
+    
+
+}
     result.event.name = $("h1").text()
     result.event.sourceInformation.sourceUrl = request.loadedUrl
     result.event.sourceInformation.retrievalDate = new Date().toISOString()
@@ -61,7 +71,8 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
 
     result.event.ticketUrls = [$("div.event-actions.noncust.block > a:contains('Koop tickets')").attr("href")]
 
-    //collecting Urls and enqueueing new bined requests
+
+    //collecting Urls and enqueueing new bined requests which info should be included in 1 common dataset 
     result.organizerUrls = []
     $("div.party.box span[itemprop='organizer'] > a[itemprop='url']").each(function () {
         result.organizerUrls.push($(this).attr("href"))
@@ -72,152 +83,89 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
         result.artistUrls.push($(this).attr("href"))
     })
 
-    const location = []
+    result.locationUrls = []
     $("span[itemprop='location'] > a[href^='/location/']").each(function () {
-        location.push(`https://partyflock.nl${$(this).attr("href")}`)
+        result.locationUrls.push(`https://partyflock.nl${$(this).attr("href")}`)
     })
-    console.log(location)
 
-    if (location.length > 0) {
+    if (result.locationUrls.length > 0) {
         log.info(`enqueueing URL for location`);
         await enqueueLinks({
-            label: 'location',
+            label: 'details',
             forefront: true,
-            urls: location,
+            urls: result.locationUrls,
             userData: result,
         });
     }
     else if (result.organizerUrls.length > 0) {
-        //enqueueing organizer
-        request.userData.label = "organizer"
         log.info(`enqueueing URL for organizer`);
         await enqueueLinks({
-            userData: result,
+            label: 'details',
             forefront: true,
             urls: [result.organizerUrls[0]],
+            userData: result,
         });
     }
     else if (result.artistUrls.length > 0) {
-        //enqueueing artist
-        request.userData.label = "artist"
         log.info(`enqueueing URL for artist`);
         await enqueueLinks({
-            userData: result,
+            label: 'details',
             forefront: true,
             urls: [result.artistUrls[0]],
+            userData: result,
         });
     }
     else {
-        console.log("dataset pushed")
+        
+        delete result.organizerUrls
+        delete result.artistUrls
+        delete result.locationUrls
+
         await Dataset.pushData({
             ...result
         });
+        console.log("Dataset pushed")
     }
 });
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-//collecting location
-cheerioRouter.addHandler('location', async ({ request, $, log, enqueueLinks }) => {
+//collecting location / organizer / artist
+cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) => {
     const title = $('title').text();
     log.info(`${title}`, { url: request.loadedUrl });
 
     let result = request.userData
-    result.location.name = $("h1").text() //stejny pro vsechny
-    result.location.description = $("#biobody").text() //pouze location
-    result.location.sourceInformation.uuid = request.url.split("/")[4] //stejny pro vsechny
-    result.location.sourceInformation.sourceUrl = request.url //stejny pro vsechny
-    result.location.sourceInformation.retrievalDate = new Date().toISOString() //stejny pro vsechny
-    result.location.websiteUrls.push($("a[title]", "table.nodyn.deflist.vtop tr:contains('Site')").attr("title")) //stejny pro vsechny
-    result.location.emailAddresses.push($("a", "table.nodyn.deflist.vtop tr:contains('E-mail')").text()) //stejny pro vsechny
 
-    result.location.address.country = $("span[itemprop='addressCountry']", "table.nodyn.deflist.vtop tr:contains('Adres')").text() //stejny pro vsechny
-    result.location.address.street = $("span[itemprop='streetAddress']", "table.nodyn.deflist.vtop tr:contains('Adres')").text() //stejny pro vsechny
-    result.location.address.houseNumber = result.location.address.street.match(/\d+$/) //stejny pro vsechny
-    result.location.address.street = result.location.address.street.replace(` ${result.location.address.houseNumber}`, "") //stejny pro vsechny
-    result.location.address.postalCode = $("span[itemprop='postalCode']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()//stejny pro vsechny
-    result.location.address.city = $("span[itemprop='addressLocality']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()//stejny pro vsechny
-    result.location.address.rawAddress = `${result.location.address.street} ${result.location.address.houseNumber} ${result.location.address.country}`//stejny pro vsechny
-
-
-    console.log("zpracoval jsem location")
-
-
-    //enqueueing bined request for organizers / artist
-    if (result.organizerUrls.length > 0) {
-        request.userData.label = "organizer"
-        log.info(`enqueueing URL for organizer`);
-        await enqueueLinks({
-            userData: result,
-            forefront: true,
-            urls: [result.organizerUrls[0]],
-        });
-    }
-
-    else if (result.artistUrls.length > 0) {
-        request.userData.label = "artist"
-        log.info(`enqueueing URL for artist`);
-        await enqueueLinks({
-            userData: result,
-            forefront: true,
-            urls: [result.artistUrls[0]],
-        });
-    }
-
-    else {
-        console.log("dataset pushed")
-        await Dataset.pushData({
-            ...result
-        });
-    }
-
-});
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-//collecting organizer
-cheerioRouter.addHandler('organizer', async ({ enqueueLinks, request, $, log }) => {
-    const title = $('title').text();
-    log.info(`${title}`, { url: request.loadedUrl });
-
-    let result = request.userData
-    result.organizerUrls.shift()
-
-    //sesbiraji se vsechny data do objektu a pak se podle toho zda jde o organizera nebo o artist da ten objekt do prislusny pozice + se vyresi par vyjimek u atributu (vypadaji ale vsichni stejne)
-
-
-
-
-    //to be improved (currently collectinh also some dates)
-    let tags = []
+    let tags = [] //to be improved => to remove dates
     $("div.organization a[href^='/agenda/']").each(function () {
         tags.push($(this).text())
     })
-
     let street = $("span[itemprop='streetAddress']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
-    let houseNumber = street.match(/\d+$/) || ""
-    street = street.replace(` ${houseNumber}`, "")
+    let houseNumber = street.match(/\d+$/) || "" //is it useful?
+    street = street.replace(` ${houseNumber}`, "") //is it useful?
     let country = $("span[itemprop='addressCountry']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
 
-    result.organizers.push({
+    let object = {
         name: $("h1").text(),
-        sourceInformation:
-        {
+        description:"",
+        sourceInformation: {
             uuid: request.url.split("/")[4],
-            sourceId: "",
+            sourceId: "URL",
             sourceUrl: request.url,
             plattform: "https://partyflock.nl",
-            retrievalDate: new Date().toISOString(),
-            urlToEvidenceFile: "",
-            urlToHtmlFile: "",
+            retrievalDate: new Date().toISOString(), //check time
+            urlToEvidenceFile: "", //todo
+            urlToHtmlFile: "", //todo
             sourceDataLocalization: "nl",
         },
         websiteUrls: [$("a[title]", "table.nodyn.deflist.vtop tr:contains('Site')").attr("title")],
-        phoneNumbers: [],
+        phoneNumbers: [], //not found
         emailAddresses: [[$("a", "table.nodyn.deflist.vtop tr:contains('E-mail')").text()] || []],
-        category: "",
-        tags: tags,
+        category: "", //not found
+        tags: tags, 
         address: {
-            countryCode: "nl",
+            countryCode: "nl", //should be only nl ?
             country: country,
             street: street,
             houseNumber: houseNumber,
@@ -227,98 +175,63 @@ cheerioRouter.addHandler('organizer', async ({ enqueueLinks, request, $, log }) 
             region: "",
             rawAddress: `${street} ${houseNumber} ${country}`,
         }
-    })
-
-    console.log("zpracoval jsem organizer")
+    }
+    
+    if (result.locationUrls.length > 0) {
+        result.locationUrls.shift()
+        object.description = $("#biobody").text()
+        result.location = object
+    }
 
     if (result.organizerUrls.length > 0) {
-        log.info(`enqueueing URL for organizer`);
-        await enqueueLinks({
-            userData: result,
-            forefront: true,
-            urls: [result.organizerUrls[0]],
-        });
-    }
-    else {
-        //enqueueing artists
-        request.userData.label = "artist"
-        log.info(`enqueueing URL for artist`);
-        await enqueueLinks({
-            userData: result,
-            forefront: true,
-            urls: [result.artistUrls[0]],
-        });
-    }
-});
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-//collecting artists
-cheerioRouter.addHandler('artist', async ({ enqueueLinks, request, $, log }) => {
-    const title = $('title').text();
-    log.info(`${title}`, { url: request.loadedUrl });
-
-    let result = request.userData
-    result.artistUrls.shift()
-
-    //to be improved (currently collectinh also some dates)
-    let tags = []
-    $("div.organization a[href^='/agenda/']").each(function () {
-        tags.push($(this).text())
-    })
-
-
-    let street = $("span[itemprop='streetAddress']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
-    let houseNumber = street.match(/\d+$/) || ""
-    street = street.replace(` ${houseNumber}`, "")
-    let country = $("span[itemprop='addressCountry']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
-
-    result.artists.push({
-        name: $("h1").text(),
-        sourceInformation:
-        {
-            uuid: request.url.split("/")[4],
-            sourceId: "",
-            sourceUrl: request.url,
-            plattform: "https://partyflock.nl",
-            retrievalDate: new Date().toISOString(),
-            urlToEvidenceFile: "",
-            urlToHtmlFile: "",
-            sourceDataLocalization: "nl",
-        },
-        websiteUrls: [$("a[title]", "table.nodyn.deflist.vtop tr:contains('Site')").attr("title")],
-        phoneNumbers: [],
-        emailAddresses: [[$("a", "table.nodyn.deflist.vtop tr:contains('E-mail')").text()] || []],
-        category: "",
-        tags: tags,
-        address: {
-            countryCode: "nl",
-            country: country,
-            street: street,
-            houseNumber: houseNumber,
-            postalCode: $("span[itemprop='postalCode']", "table.nodyn.deflist.vtop tr:contains('Adres')").text(),
-            city: $("span[itemprop='addressLocality']", "table.nodyn.deflist.vtop tr:contains('Adres')").text(),
-            state: "",
-            region: "",
-            rawAddress: `${street} ${houseNumber} ${country}`,
+        if (request.loadedUrl === result.organizerUrls[0]) {
+            result.organizerUrls.shift()
+            delete object.description
+            result.organizers.push(object)
         }
-    })
 
-    console.log("zpracoval jsem artist")
-
-    if (result.artistUrls.length > 0) {
-        log.info(`enqueueing URL for artist`);
-        await enqueueLinks({
-            userData: result,
-            forefront: true,
-            urls: [result.artistUrls[0]],
-        });
+        if (result.organizerUrls.length > 0) {
+            log.info(`enqueueing URL for organizer`);
+            await enqueueLinks({
+                userData: result,
+                forefront: true,
+                urls: [result.organizerUrls[0]],
+            });
+        }
     }
-    else {
-        console.log("dataset pushed")
+
+    if (result.organizerUrls.length === 0 && result.artistUrls.length > 0) {
+
+        if (request.loadedUrl === result.artistUrls[0]) {
+            result.artistUrls.shift()
+            delete object.description
+            result.artists.push(object)
+        }
+        if (result.artistUrls.length > 0) {
+            log.info(`enqueueing URL for artist`);
+            await enqueueLinks({
+                userData: result,
+                forefront: true,
+                urls: [result.artistUrls[0]],
+            });
+        }
+    }
+
+    //testing
+    console.log(result.locationUrls.length, result.organizerUrls.length, result.artistUrls.length);
+
+    if (result.locationUrls.length === 0 && result.organizerUrls.length === 0 && result.artistUrls.length === 0) {
+
+        delete result.organizerUrls
+        delete result.artistUrls
+        delete result.locationUrls
+        delete result.label
+
         await Dataset.pushData({
             ...result
         });
+        console.log("Dataset pushed")
     }
 });
 
@@ -326,16 +239,15 @@ cheerioRouter.addHandler('artist', async ({ enqueueLinks, request, $, log }) => 
 export { cheerioRouter }
 
 
-// co kdyz neni zadnej organizator => pak se nebudou crawlovat artists...
-//teoreticky co kdyz bude chybet location
-//nakonci musis vyndat ty org. a art. urls pole
-//budou potreba cookies kvuli tomu jazyku (je to ted vazany na NL)
+
+//TODOs
+//budou potreba cookies kvuli tomu jazyku (je to ted vazany na NL)?
 //blocking ip adres
+//kdyz radim ty requesty tak jim musim dat unique key pro artist/location/organizer nebo se mi nepridaj kdyz uz byly zpracovany pro jinou event 
+//mam tam davat || "" nebo to je v cheeriu zbytecny?
+
+//dotazy na zakaznika
 //jsou webovky jen webovky nebo i social sites?
 // je jmeno u artists realny jmeno nebo jmeno umelecky? https://partyflock.nl/artist/99414:AIROD
 // chtej do country původ nebo rezidenstvi? https://partyflock.nl/artist/558:Rush
-//pokud nechtej zadny info z artists tak muzu scrapnout jen artist name v eventu
-
-
-//asi bude nejlepsi kdyz organizers a artists budou scrapovany stejnym handlerem a jen ty atributy budou dany podminkou
-//kdyz radim ty requesty tak jim musim dat unique key pro artist/location/organizer nebo se mi nepridaj kdyz uz byly zpracovany pro jinou event 
+//pokud nechtej zadny info z artists tak muzu scrapnout jen artist name v eventu a usetrit tim cas a costs
