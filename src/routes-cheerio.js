@@ -7,69 +7,59 @@ const cheerioRouter = createCheerioRouter();
 
 cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
 
-    //general
-    let result = { ...output }
     const title = $('title').text();
     log.info(`${title}`, { url: request.loadedUrl });
-let object = {
 
+    let result = {
+        event: {
+            name: $("h1").text(),
+            sourceInformation: {
+                uuid: request.url.split("/")[4],
+                sourceId: "URL",
+                sourceUrl: request.url, //rozdil od loadedUrl?
+                plattform: "https://partyflock.nl",
+                retrievalDate: new Date().toISOString(), //check time
+                urlToEvidenceFile: "", //todo
+                urlToHtmlFile: "", //todo
+                sourceDataLocalization: "nl",
+            },
+            description: $(".block.forcewrap").text(),
+            startDateTime: changeDateFormat($("time[itemprop='startDate']").attr("datetime"), $("time[itemprop='startDate']").text()),
+            endDateTime: changeDateFormat($("time[itemprop='endDate']").attr("datetime"), $("time[itemprop='endDate']").text()),
+            status: $("div.sold-out").text(),
+            isOnline: "",
+            category: "",
+            tags: [],
+            admissionInformation: [],
+            numberOfInterestees: 0,
+            numberOfAttendees: 0,
+            ticketUrls: [$("div.event-actions.noncust.block > a:contains('Koop tickets')").attr("href")]
+        },
+        location: {},
+        organizers: [],
+        artists: []
+    }
 
-
-
-
-
-
-
-    
-
-}
-    result.event.name = $("h1").text()
-    result.event.sourceInformation.sourceUrl = request.loadedUrl
-    result.event.sourceInformation.retrievalDate = new Date().toISOString()
-    result.event.description = $(".block.forcewrap").text()
-    result.event.startDateTime = changeDateFormat($("time[itemprop='startDate']").attr("datetime"), $("time[itemprop='startDate']").text())
-    result.event.endDateTime = changeDateFormat($("time[itemprop='endDate']").attr("datetime"), $("time[itemprop='endDate']").text())
-    const admissionInformation = []
 
     $("table.default.vtop.prices tr").each(function () {
-        admissionInformation.push({
+        result.event.admissionInformation.push({
             amount: Number($(".nowrap.right.incfee", this).text().trim()),
             currency: $(":nth-child(2)", this).text().trim(),
             category: $(".rrpad", this).text().trim().slice(0, -1)
         })
     })
 
-    result.event.admissionInformation = admissionInformation
-
-    let numberOfInterestees = 0
-    let numberOfAttendees = 0
-
     $("table.fw.vtop.default tr").each(function () {
         const interested = Number($(":contains('geïnteresseerd') td.right", this).text())
         const visitors = Number($(":contains('bezoekers') td.right", this).text())
 
-        numberOfInterestees += interested
-        numberOfAttendees += visitors
+        result.event.numberOfInterestees += interested
+        result.event.numberOfAttendees += visitors
     })
 
-    $("table.fw.vtop.default tr").each(function () {
-        const interested = Number($(":contains('geïnteresseerd') td.right", this).text())
-        const visitors = Number($(":contains('bezoekers') td.right", this).text())
-
-        numberOfInterestees += interested
-        numberOfAttendees += visitors
-    })
-
-    result.event.status = $("div.sold-out").text()
-
-    $("div[class=block] > div[class] > a", "div.party.box > div.box-column").each(function () {
+    $("div[class=block] > div[class] > a", "div.party.box > div.box-column").each(function () { //to be improved => to
         result.event.tags.push($(this).text())
     })
-
-    result.event.numberOfInterestees = numberOfInterestees
-    result.event.numberOfAttendees = numberOfAttendees
-
-    result.event.ticketUrls = [$("div.event-actions.noncust.block > a:contains('Koop tickets')").attr("href")]
 
 
     //collecting Urls and enqueueing new bined requests which info should be included in 1 common dataset 
@@ -116,7 +106,7 @@ let object = {
         });
     }
     else {
-        
+
         delete result.organizerUrls
         delete result.artistUrls
         delete result.locationUrls
@@ -148,7 +138,7 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
 
     let object = {
         name: $("h1").text(),
-        description:"",
+        description: "",
         sourceInformation: {
             uuid: request.url.split("/")[4],
             sourceId: "URL",
@@ -163,7 +153,7 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
         phoneNumbers: [], //not found
         emailAddresses: [[$("a", "table.nodyn.deflist.vtop tr:contains('E-mail')").text()] || []],
         category: "", //not found
-        tags: tags, 
+        tags: tags,
         address: {
             countryCode: "nl", //should be only nl ?
             country: country,
@@ -176,7 +166,7 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
             rawAddress: `${street} ${houseNumber} ${country}`,
         }
     }
-    
+
     if (result.locationUrls.length > 0) {
         result.locationUrls.shift()
         object.description = $("#biobody").text()
