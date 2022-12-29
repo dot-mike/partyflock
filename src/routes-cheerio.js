@@ -1,5 +1,4 @@
 import { Dataset, createCheerioRouter } from 'crawlee';
-import { output } from '../utilities/exampleOutput.js';
 import { changeDateFormat } from '../utilities/changeDateFormat.js'
 
 
