@@ -1,45 +1,34 @@
 export const output = {
     "event": {
-        "name": "Deja Vu",
+        "name": "",
         "sourceInformation": {
             "uuid": "",
             "sourceId": "",
-            "sourceUrl": "https://www.songkick.com/concerts/39779224-deja-vu-at-welly-club",
+            "sourceUrl": "",
             "plattform": "www.partyflock.nl/",
             "retrievalDate": "2022-07-22T09:09:53.287Z", //prefered timezone?
 
             //todo
-            "urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
-            "urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
+            //"urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
+            //"urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
             //
 
             //should it be "nl" for partyflocker ??? => if not code needs to be changed as it sometimes relies on text e.g ticket url
             "sourceDataLocalization": "nl"
             //
         },
-        "description": "Schlager Parade",
-        "startDateTime": "2021-07-23 08:00",
-        "endDateTime": "2021-07-23 23:00",
+        "description": "",
+        "startDateTime": "",
+        "endDateTime": "",
         "status": "",//currently collecting only "Uitverkocht" in case of alert "sold out" 
-        
+
         //not found
         "isOnline": "",
         "category": "",
         //
 
         "tags": [],
-        "admissionInformation": [
-            {
-                "amount": 10,
-                "currency": "€",
-                "category": "Erwachsener"
-            },
-            {
-                "amount": 5,
-                "currency": "€",
-                "category": "Kind"
-            }
-        ],
+        "admissionInformation": [],
 
         "numberOfInterestees": "",
         "numberOfAttendees": "",
@@ -58,11 +47,11 @@ export const output = {
             "retrievalDate": "", //prefered timezone?
 
             //todo
-            "urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
-            "urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
+            //"urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
+            //"urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
             //
 
-            "sourceDataLocalization": "nl"
+            "sourceDataLocalization": "nl" //should be always nl?
         },
         "websiteUrls": [],
 
@@ -100,87 +89,47 @@ export const output = {
         }
     },
     "organizers": [
-        {
-            "name": "The Welly Club Company",
-            "sourceInformation": {
-                "uuid": "",
-                "sourceId": "",
-                "sourceUrl": "https://www.songkick.com/concerts/39779224-deja-vu-at-welly-club",
-                "plattform": "www.songkick.com",
-                "retrievalDate": "2022-07-22T09:09:53.287Z",
-                "urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
-                "urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
-                "sourceDataLocalization": "en"
-            },
-            "websiteUrls": [
-                "goolge.places/asdf",
-                "www.club.de"
-            ],
-            "phoneNumbers": [
-                "+42 1912992",
-                "+42 1912444"
-            ],
-            "emailAddresses": [
-                "asdf@gmail.com",
-                "dasdssdsa@web.de"
-            ],
-            "category": "dance_club",
-            "tags": [
-                "entertainment"
-            ],
-            "address": {
-                "countryCode": "de",
-                "country": "Germany",
-                "street": "BEVERLEY ROAD",
-                "houseNumber": "42a",
-                "postalCode": "HU3 1TS",
-                "city": "Hull",
-                "state": "saxony",
-                "region": "sächsische schweiz",
-                "rawAddress": "BEVERLEY ROAD 42a sächsische schweiz saxony Germany"
-            }
-        },
-        {
-            "name": "The Welly Club Company",
-            "sourceInformation": {
-                "uuid": "",
-                "sourceId": "",
-                "sourceUrl": "https://www.songkick.com/concerts/39779224-deja-vu-at-welly-club",
-                "plattform": "www.songkick.com",
-                "retrievalDate": "2022-07-22T09:09:53.287Z",
-                "urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
-                "urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
-                "sourceDataLocalization": "en"
-            },
-            "websiteUrls": [
-                "goolge.places/asdf",
-                "www.club.de"
-            ],
-            "phoneNumbers": [
-                "+42 1912992",
-                "+42 1912444"
-            ],
-            "emailAddresses": [
-                "asdf@gmail.com",
-                "dasdssdsa@web.de"
-            ],
-            "category": "dance_club",
-            "tags": [
-                "entertainment"
-            ],
-            "address": {
-                "countryCode": "de",
-                "country": "Germany",
-                "street": "BEVERLEY ROAD",
-                "houseNumber": "42a",
-                "postalCode": "HU3 1TS",
-                "city": "Hull",
-                "state": "saxony",
-                "region": "sächsische schweiz",
-                "rawAddress": "BEVERLEY ROAD 42a sächsische schweiz saxony Germany"
-            }
-        }
+        /*
+         {
+             "name": "",
+             "sourceInformation": {
+                 "uuid": "",
+                 "sourceId": "",//
+                 "sourceUrl": "",
+                 "plattform": "https://partyflock.nl",
+                 "retrievalDate": "", //prefered timezone?
+                 //todo
+                 //"urlToEvidenceFile": "39779224-deja-vu-at-well -club.pdf",
+                 //"urlToHtmlFile": "39779224-deja-vu-at-welly-club.html",
+                 "sourceDataLocalization": "nl" //should be always nl?
+             },
+             //
+             "websiteUrls": [],
+             "phoneNumbers": [], //not found
+             "emailAddresses": [],
+             "category": "dance_club", //not found
+             
+             //todo validation needed
+             "tags": [
+                 "entertainment"
+             ],
+             //
+ 
+             "address": {
+                 "countryCode": "nl", //should be always nl?
+                 "country": "",
+                 "street": "",
+                 "houseNumber": "",
+                 "postalCode": "",
+                 "city": "",
+                 "state": "saxony", //not found
+                 "region": "sächsische schweiz", //not found
+                 "rawAddress": ""
+             }
+         }*/
     ],
+
+
     "artists": [
         {
             "sourceInformation": {
@@ -250,6 +199,7 @@ export const output = {
             "tags": [
                 "entertainment"
             ],
+
             "address": {
                 "countryCode": "de",
                 "country": "Germany",

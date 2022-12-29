@@ -36,5 +36,6 @@ console.log("Playwright finished")
 //commented due to testing of cheerio with artif. input
 //console.log([eventURLs[0]])
 //await cheerioCrawler.run([eventURLs[0]]);
-await cheerioCrawler.run(["https://partyflock.nl/party/421036:Army-of-Hardcore"]);
+await cheerioCrawler.run(["https://partyflock.nl/party/440994:Awakenings"]);
+//await cheerioCrawler.run(["https://partyflock.nl/party/421036:Army-of-Hardcore"]);
 
