@@ -1,5 +1,6 @@
-import { Dataset, createCheerioRouter } from 'crawlee';
+import { createCheerioRouter } from 'crawlee';
 import { changeDateFormat } from '../utilities/changeDateFormat.js'
+import { Actor } from 'apify';
 
 
 const cheerioRouter = createCheerioRouter();
@@ -17,7 +18,7 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
                 sourceId: "URL",
                 sourceUrl: request.url, //rozdil od loadedUrl?
                 plattform: "https://partyflock.nl",
-                retrievalDate: new Date().toISOString(), //check time
+                retrievalDate: new Date().toISOString(),
                 urlToEvidenceFile: "", //todo
                 urlToHtmlFile: "", //todo
                 sourceDataLocalization: "nl",
@@ -28,7 +29,7 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
             status: $("div.sold-out").text(),
             isOnline: "",
             category: "",
-            tags: [],
+            tags: [], //to be improved
             admissionInformation: [],
             numberOfInterestees: 0,
             numberOfAttendees: 0,
@@ -56,10 +57,9 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
         result.event.numberOfAttendees += visitors
     })
 
-    $("div[class=block] > div[class] > a", "div.party.box > div.box-column").each(function () { //to be improved => to
+    $("div.box-column a[href^='/agenda/']:not(time a)").each(function () {
         result.event.tags.push($(this).text())
     })
-
 
     //collecting Urls and enqueueing new bined requests which info should be included in 1 common dataset 
     result.organizerUrls = []
@@ -84,6 +84,11 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
             forefront: true,
             urls: result.locationUrls,
             userData: result,
+            transformRequestFunction: (request) => {
+                request.uniqueKey = new Date().toISOString();
+                return request;
+            }
+
         });
     }
     else if (result.organizerUrls.length > 0) {
@@ -93,6 +98,10 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
             forefront: true,
             urls: [result.organizerUrls[0]],
             userData: result,
+            transformRequestFunction: (request) => {
+                request.uniqueKey = new Date().toISOString();
+                return request;
+            }
         });
     }
     else if (result.artistUrls.length > 0) {
@@ -102,6 +111,10 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
             forefront: true,
             urls: [result.artistUrls[0]],
             userData: result,
+            transformRequestFunction: (request) => {
+                request.uniqueKey = new Date().toISOString();
+                return request;
+            }
         });
     }
     else {
@@ -110,7 +123,7 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
         delete result.artistUrls
         delete result.locationUrls
 
-        await Dataset.pushData({
+        await Actor.pushData({
             ...result
         });
         console.log("Dataset pushed")
@@ -126,14 +139,17 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
 
     let result = request.userData
 
-    let tags = [] //to be improved => to remove dates
-    $("div.organization a[href^='/agenda/']").each(function () {
+    let tags = []
+    $("div.box-column a[href^='/agenda/']:not(time a)").each(function () {
         tags.push($(this).text())
     })
     let street = $("span[itemprop='streetAddress']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
     let houseNumber = street.match(/\d+$/) || "" //is it useful?
     street = street.replace(` ${houseNumber}`, "") //is it useful?
     let country = $("span[itemprop='addressCountry']", "table.nodyn.deflist.vtop tr:contains('Adres')").text()
+    let emailAddresses = $("a", "table.nodyn.deflist.vtop tr:contains('E-mail')").text()
+    emailAddresses === "" ? emailAddresses = null : emailAddresses = emailAddresses
+
 
     let object = {
         name: $("h1").text(),
@@ -150,7 +166,7 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
         },
         websiteUrls: [$("a[title]", "table.nodyn.deflist.vtop tr:contains('Site')").attr("title")],
         phoneNumbers: [], //not found
-        emailAddresses: [[$("a", "table.nodyn.deflist.vtop tr:contains('E-mail')").text()] || []],
+        emailAddresses: [emailAddresses],
         category: "", //not found
         tags: tags,
         address: {
@@ -186,6 +202,11 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
                 userData: result,
                 forefront: true,
                 urls: [result.organizerUrls[0]],
+
+                transformRequestFunction: (request) => {
+                    request.uniqueKey = new Date().toISOString();
+                    return request;
+                }
             });
         }
     }
@@ -203,12 +224,13 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
                 userData: result,
                 forefront: true,
                 urls: [result.artistUrls[0]],
+                transformRequestFunction: (request) => {
+                    request.uniqueKey = new Date().toISOString();
+                    return request;
+                }
             });
         }
     }
-
-    //testing
-    console.log(result.locationUrls.length, result.organizerUrls.length, result.artistUrls.length);
 
     if (result.locationUrls.length === 0 && result.organizerUrls.length === 0 && result.artistUrls.length === 0) {
 
@@ -217,7 +239,7 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
         delete result.locationUrls
         delete result.label
 
-        await Dataset.pushData({
+        await Actor.pushData({
             ...result
         });
         console.log("Dataset pushed")
@@ -230,10 +252,12 @@ export { cheerioRouter }
 
 
 //TODOs
-//budou potreba cookies kvuli tomu jazyku (je to ted vazany na NL)?
-//blocking ip adres
-//kdyz radim ty requesty tak jim musim dat unique key pro artist/location/organizer nebo se mi nepridaj kdyz uz byly zpracovany pro jinou event 
-//mam tam davat || "" nebo to je v cheeriu zbytecny?
+//??? - budou potreba cookies kvuli tomu jazyku (je to ted vazany na NL)?
+//done - blocking ip adres => https://crawlee.dev/docs/guides/proxy-management
+
+//done - kdyz radim ty requesty tak jim musim dat unique key pro artist/location/organizer nebo se mi nepridaj kdyz uz byly zpracovany pro jinou event 
+
+//done - mam tam davat || "" nebo to je v cheeriu zbytecny?
 
 //dotazy na zakaznika
 //jsou webovky jen webovky nebo i social sites?
