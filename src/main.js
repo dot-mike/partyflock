@@ -37,13 +37,13 @@ const cheerioCrawler = new CheerioCrawler({
 });
 
 
-//await playwrightCrawler.run(startUrl);
+await playwrightCrawler.run(startUrl);
 
 console.log("Playwright finished")
 
 //testing only first and last url for cheerio from start urls collected by playwright
 //await cheerioCrawler.run([eventURLs[0], eventURLs[eventURLs.length-1]]);
-//await cheerioCrawler.run(["https://partyflock.nl/party/440994:Awakenings","https://partyflock.nl/party/428434:40UP","https://partyflock.nl/party/445088:BASIS"]);
-await cheerioCrawler.run(["https://partyflock.nl/party/444986:Zoete-Zin","https://partyflock.nl/party/431309:The-best-tour-EVER-tour"]);
+
+await cheerioCrawler.run([eventURLs]);
 
 await Actor.exit();

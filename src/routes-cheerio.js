@@ -257,7 +257,7 @@ export { cheerioRouter }
 
 //done - kdyz radim ty requesty tak jim musim dat unique key pro artist/location/organizer nebo se mi nepridaj kdyz uz byly zpracovany pro jinou event 
 
-//done - mam tam davat || "" nebo to je v cheeriu zbytecny?
+//mam tam davat || "" nebo to je v cheeriu zbytecny?
 
 //dotazy na zakaznika
 //jsou webovky jen webovky nebo i social sites?
