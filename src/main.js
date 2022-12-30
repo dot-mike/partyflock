@@ -44,6 +44,6 @@ console.log("Playwright finished")
 //testing only first and last url for cheerio from start urls collected by playwright
 //await cheerioCrawler.run([eventURLs[0], eventURLs[eventURLs.length-1]]);
 
-await cheerioCrawler.run([eventURLs]);
+await cheerioCrawler.run(eventURLs);
 
 await Actor.exit();
