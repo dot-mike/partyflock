@@ -182,6 +182,13 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
         }
     }
 
+    //street with housenumber or country is missing         
+    while (object.address.rawAddress.startsWith(" ")) {
+        object.address.rawAddress = object.address.rawAddress.replace(" ", "")
+    }
+   
+
+
     if (result.locationUrls.length > 0) {
         result.locationUrls.shift()
         object.description = $("#biobody").text()
@@ -254,8 +261,12 @@ export { cheerioRouter }
 //TODOs
 //??? - budou potreba cookies kvuli tomu jazyku (je to ted vazany na NL)?
 //done - blocking ip adres => https://crawlee.dev/docs/guides/proxy-management
-
 //done - kdyz radim ty requesty tak jim musim dat unique key pro artist/location/organizer nebo se mi nepridaj kdyz uz byly zpracovany pro jinou event 
+
+// case: 
+//"rawAddress": "Westersingel50a  Nederland"
+//"street": "Westersingel50a",
+//"houseNumber": "",
 
 //mam tam davat || "" nebo to je v cheeriu zbytecny?
 
