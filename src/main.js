@@ -14,8 +14,8 @@ const playwrightCrawler = new PlaywrightCrawler({
     
     //avoiding IP address blocking
     proxyConfiguration: await Actor.createProxyConfiguration({
-        "useApifyProxy": true,
-        "apifyProxyGroups": [
+        useApifyProxy: true,
+        apifyProxyGroups: [
             "USA"
         ]
     }),
@@ -26,13 +26,24 @@ const cheerioCrawler = new CheerioCrawler({
 
     //IP address blocking
     proxyConfiguration: await Actor.createProxyConfiguration({
-        "useApifyProxy": true,
-        "apifyProxyGroups": [
+        useApifyProxy: true,
+        apifyProxyGroups: [
             "USA"
         ]
     }),
 
     requestHandler: cheerioRouter,
+    
+    //maxRequestRetries: 50, // a lot of 429 blocks
+    
+    // sessionPoolOptions: {
+    //     maxPoolSize: 800,
+    //     sessionOptions: {
+    //         maxUsageCount: 5, // tests show that they start blocking approx after 5th usage.
+    //     },
+    // },
+    
+    maxConcurrency:5
 
 });
 
