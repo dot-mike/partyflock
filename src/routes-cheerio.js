@@ -5,10 +5,10 @@ import { Actor } from 'apify';
 
 const cheerioRouter = createCheerioRouter();
 
-cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
+cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log, proxyInfo }) => {
 
     const title = $('title').text();
-    log.info(`${title}`, { url: request.loadedUrl });
+    log.info(`${title}`, { url: request.loadedUrl }, proxyInfo);
 
     let result = {
         event: {
@@ -133,9 +133,9 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log }) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //collecting location / organizer / artist
-cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) => {
+cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks, proxyInfo }) => {
     const title = $('title').text();
-    log.info(`${title}`, { url: request.loadedUrl });
+    log.info(`${title}`, { url: request.loadedUrl }, proxyInfo);
 
     let result = request.userData
 
@@ -186,7 +186,7 @@ cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks }) =>
     while (object.address.rawAddress.startsWith(" ")) {
         object.address.rawAddress = object.address.rawAddress.replace(" ", "")
     }
-   
+
 
 
     if (result.locationUrls.length > 0) {
