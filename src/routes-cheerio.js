@@ -9,7 +9,7 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log, proxyInf
 
     const title = $('title').text();
     log.info(`${title}`, { url: request.loadedUrl }, proxyInfo);
-
+    console.log(proxyInfo)
     let result = {
         event: {
             name: $("h1").text(),
@@ -136,6 +136,7 @@ cheerioRouter.addDefaultHandler(async ({ enqueueLinks, request, $, log, proxyInf
 cheerioRouter.addHandler('details', async ({ request, $, log, enqueueLinks, proxyInfo }) => {
     const title = $('title').text();
     log.info(`${title}`, { url: request.loadedUrl }, proxyInfo);
+    console.log(proxyInfo)
 
     let result = request.userData
 
