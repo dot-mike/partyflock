@@ -34,7 +34,7 @@ const cheerioCrawler = new CheerioCrawler({
 
     requestHandler: cheerioRouter,
     
-    //maxRequestRetries: 50, // a lot of 429 blocks
+    maxRequestRetries: 50, // a lot of 429 blocks
     
     // sessionPoolOptions: {
     //     maxPoolSize: 800,
@@ -43,7 +43,7 @@ const cheerioCrawler = new CheerioCrawler({
     //     },
     // },
     
-    maxConcurrency:5
+    maxConcurrency:10
 
 });
 
