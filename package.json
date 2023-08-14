@@ -10,7 +10,8 @@
     },
     "scripts": {
         "start": "node src/main.js",
-        "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
+        "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1",
+        "apifyrun": "APIFY_MEMORY_MBYTES=16384 apify run -p"
     },
     "author": "It's not you it's me",
     "license": "ISC"

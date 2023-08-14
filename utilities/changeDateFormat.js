@@ -2,12 +2,14 @@ export const changeDateFormat = (dateString, timeElement) => {
   let date;
   let time;
 
-  if (dateString === !"") {
+  if (dateString) {
     date = dateString.substring(0, 10);
   }
-  if (timeElement === !"") {
-    time = timeElement && timeElement.slice(-5);
+  if (timeElement) {
+    time = timeElement.slice(-5);
   }
-
-  return `${date} ${time}`
-}
+  if (!time) {
+    return null;
+  }
+  return `${date} ${time}`;
+};
